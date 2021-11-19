@@ -31,6 +31,9 @@ void inputCharacters(char *text) {
 }
 
 void backspace() {
+    if(cursor == flatBuffer)
+        return; // NOTE: You shouldn't backspace past the beginning.
+    
     char *temp = cursor;
     cursor--;
     memmove( (void *) cursor, (void *) temp, sizeof(flatBuffer));
@@ -60,6 +63,12 @@ int main(int argc, char* argv[]) {
                 switch (event.key.keysym.sym) {
                     case SDLK_BACKSPACE:
                         backspace();
+                        break;
+                    case SDLK_LEFT:
+                        cursor--;
+                        break;
+                    case SDLK_RIGHT:
+                        cursor++;
                         break;
                 }
                 break;

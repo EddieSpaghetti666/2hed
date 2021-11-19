@@ -53,6 +53,26 @@ Font loadFontFromFile(const char* fileName) {
 	return font;
 }
 
+void drawCaret(const Font* const font, const float scale, Vec2f* pos)
+{
+    // TODO: Make the caret blink
+    #define RIGHT_PADDING 1
+    
+    SDL_Rect caret = {
+        .x = (int) (pos->x),
+        .y = (int) (pos->y + (scale/4)), 
+        .w = (int) (font->charData[0].xadvance + RIGHT_PADDING),
+        .h = (int) scale,
+    };
+
+    SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 100);
+    SDL_RenderFillRect(renderer, &caret);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+    SDL_RenderDrawRect(renderer, &caret);
+
+    #undef RIGHT_PADDING
+}
+
 void drawChar(const Font* const font, const char c, const float scale, Vec2f* pos) {
 
 	stbtt_aligned_quad cquad;
@@ -73,10 +93,17 @@ void drawChar(const Font* const font, const char c, const float scale, Vec2f* po
 
 	SDL_RenderCopy(renderer, font->texture, &src, &dst);
 
+
 }
 
-void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos) {
-	for (size_t i = 0; i < strlen(string); ++i) {
-		drawChar(font, string[i], scale, startPos);
+void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos, char *cursor) {
+	while (*string) {
+        if(cursor == string)
+        {
+            drawCaret(font, scale, startPos);
+        }
+		drawChar(font, *string, scale, startPos);
+        
+        string++;
 	}
 }

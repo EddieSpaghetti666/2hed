@@ -14,6 +14,8 @@
 SDL_Window* window;
 SDL_Renderer* renderer;
 
+char *cursor;
+
 static void initSDL() {
 	sce(SDL_Init(SDL_INIT_VIDEO));
 	window = scp(SDL_CreateWindow("2hed", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN));
@@ -22,8 +24,12 @@ static void initSDL() {
 
 int main(int argc, char* argv[]) {
 	initSDL();
+    
+    char *flatBuffer;
+    flatBuffer = "PENIS!";
+    cursor = &flatBuffer[2];
 	
-	Font font = loadFontFromFile("C:\\Windows\\Fonts\\arial.ttf");
+	Font font = loadFontFromFile("LiberationMono-Regular.ttf");
 
 
 	bool quit = false;
@@ -42,7 +48,7 @@ int main(int argc, char* argv[]) {
 
 		SDL_SetRenderDrawColor(renderer, 205, 70, 70, SDL_ALPHA_OPAQUE);
 		Vec2f pos = { SCREEN_WIDTH/2 - 50.0f, SCREEN_HEIGHT/2 - 50.0f };
-		drawString(&font, "PENIS!", 32.0f, &pos);
+		drawString(&font, flatBuffer, 32.0f, &pos, cursor);
 
 		SDL_RenderPresent(renderer);
 	}

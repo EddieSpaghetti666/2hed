@@ -48,9 +48,29 @@ Font loadFontFromFile(const char* fileName) {
 	free(bitmap);
 
 	bakedFontSurface->pixels = NULL;
-	SDL_FreeSurface(bakedFontSurface);
+	//SDL_FreeSurface(bakedFontSurface);
 
 	return font;
+}
+
+void drawCaret(const Font* const font, const float scale, Vec2f* pos)
+{
+    // TODO: Make the caret blink
+    #define RIGHT_PADDING 1
+    
+    SDL_Rect caret = {
+        .x = (int) (pos->x),
+        .y = (int) (pos->y + (scale/4)), 
+        .w = (int) (font->charData[0].xadvance + RIGHT_PADDING),
+        .h = (int) scale,
+    };
+
+    SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 100);
+    SDL_RenderFillRect(renderer, &caret);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+    SDL_RenderDrawRect(renderer, &caret);
+
+    #undef RIGHT_PADDING
 }
 
 void drawChar(const Font* const font, const char c, const float scale, Vec2f* pos) {
@@ -59,24 +79,31 @@ void drawChar(const Font* const font, const char c, const float scale, Vec2f* po
 	stbtt_GetBakedQuad(font->charData, PALETTE_WIDTH, PALETTE_HEIGHT, c - 32, &pos->x, &pos->y, &cquad, 0);
 
 	SDL_Rect src = {
-		.x = cquad.s0 * PALETTE_WIDTH,
-		.y = cquad.t0 * PALETTE_HEIGHT,
-		.w = cquad.x1 - cquad.x0,
-		.h = cquad.y1 - cquad.y0
+		.x = (int) (cquad.s0 * PALETTE_WIDTH),
+		.y = (int) (cquad.t0 * PALETTE_HEIGHT),
+		.w = (int) (cquad.x1 - cquad.x0),
+		.h = (int) (cquad.y1 - cquad.y0)
 	};
 	SDL_Rect dst = {
-		.x = cquad.x0,
-		.y = cquad.y0 + scale, //We have to add the scale to the y position here because SDL and openGl have different coord systems. 
+		.x = (int) cquad.x0,
+		.y = (int) (cquad.y0 + scale), //We have to add the scale to the y position here because SDL and openGl have different coord systems. 
 		.w = src.w,
 		.h = src.h,
 	};
 
 	SDL_RenderCopy(renderer, font->texture, &src, &dst);
 
+
 }
 
-void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos) {
-	for (size_t i = 0; i < strlen(string); ++i) {
-		drawChar(font, string[i], scale, startPos);
+void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos, char *cursor) {
+	while (*string) {
+        if(cursor == string)
+        {
+            drawCaret(font, scale, startPos);
+        }
+		drawChar(font, *string, scale, startPos);
+        
+        string++;
 	}
 }

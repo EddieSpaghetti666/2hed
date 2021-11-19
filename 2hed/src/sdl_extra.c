@@ -24,9 +24,9 @@ SDL_Surface* createSurfaceFromPalette(unsigned char* bitmap) {
 
 	SDL_Color colors[256] = { 0 };
 	for (int i = 0; i < 256; ++i) {
-		colors[i].r = i;
-		colors[i].g = i;
-		colors[i].b = i;
+		colors[i].r = (Uint8) i;
+		colors[i].g = (Uint8) i;
+		colors[i].b = (Uint8) i;
 	}
 
 	sce(SDL_SetPaletteColors(bakedfontSurface->format->palette, colors, 0, 256));

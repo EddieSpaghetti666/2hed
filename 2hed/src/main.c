@@ -14,6 +14,7 @@
 SDL_Window* window;
 SDL_Renderer* renderer;
 
+char *flatBuffer;
 char *cursor;
 
 static void initSDL() {
@@ -22,10 +23,17 @@ static void initSDL() {
 	renderer = scp(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 }
 
+void inputCharacters(char *text)
+{
+    char *temp = cursor;
+    cursor++;
+    memmove( (void *) cursor, (void *) temp, sizeof(text));
+    *temp = *text;
+}
+
 int main(int argc, char* argv[]) {
 	initSDL();
     
-    char *flatBuffer;
     flatBuffer = "PENIS!";
     cursor = &flatBuffer[2];
 	
@@ -39,7 +47,12 @@ int main(int argc, char* argv[]) {
 			switch (event.type) {
 			case SDL_QUIT:
 				quit = true;
+                break;
+            case SDL_TEXTINPUT:
+                inputCharacters(event.text.text);
+                break;
 			}
+            
 		}
 
 		//Clear screen
@@ -47,10 +60,13 @@ int main(int argc, char* argv[]) {
 		SDL_RenderClear(renderer);
 
 		SDL_SetRenderDrawColor(renderer, 205, 70, 70, SDL_ALPHA_OPAQUE);
-		Vec2f pos = { SCREEN_WIDTH/2 - 50.0f, SCREEN_HEIGHT/2 - 50.0f };
-		drawString(&font, flatBuffer, 32.0f, &pos, cursor);
+        
+        Vec2f pos = { SCREEN_WIDTH/2 - 50.0f, SCREEN_HEIGHT/2 - 50.0f };
+        drawString(&font, flatBuffer, 32.0f, &pos, cursor);
+    
 
-		SDL_RenderPresent(renderer);
+        SDL_RenderPresent(renderer);
+
 	}
 
 	SDL_Quit();

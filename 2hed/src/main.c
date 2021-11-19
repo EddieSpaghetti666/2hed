@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "util.h"
+#include "sdl_extra.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "font.h"
@@ -14,14 +15,9 @@ SDL_Window* window;
 SDL_Renderer* renderer;
 
 static void initSDL() {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) goto ERROR;
-	window = SDL_CreateWindow("2hed", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	if (!window) goto ERROR;
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (!renderer) goto ERROR;
-	return;
-ERROR:
-	printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+	sce(SDL_Init(SDL_INIT_VIDEO));
+	window = scp(SDL_CreateWindow("2hed", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN));
+	renderer = scp(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 }
 
 int main(int argc, char* argv[]) {

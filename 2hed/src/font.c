@@ -46,8 +46,9 @@ Font loadFontFromFile(const char* fileName) {
 	font.texture = scp(SDL_CreateTextureFromSurface(renderer, bakedFontSurface));
 
 	free(bitmap);
-	//TODO: Freeing the surface crashes me for some reason idk.
-	//SDL_FreeSurface(bakedFontSurface);
+
+	bakedFontSurface->pixels = NULL;
+	SDL_FreeSurface(bakedFontSurface);
 
 	return font;
 }

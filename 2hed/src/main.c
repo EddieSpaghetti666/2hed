@@ -23,12 +23,17 @@ static void initSDL() {
 	renderer = scp(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 }
 
-void inputCharacters(char *text)
-{
+void inputCharacters(char *text) {
     char *temp = cursor;
     cursor++;
     memmove( (void *) cursor, (void *) temp, sizeof(text));
     *temp = *text;
+}
+
+void backspace() {
+    char *temp = cursor;
+    cursor--;
+    memmove( (void *) cursor, (void *) temp, sizeof(flatBuffer));
 }
 
 int main(int argc, char* argv[]) {
@@ -51,7 +56,15 @@ int main(int argc, char* argv[]) {
             case SDL_TEXTINPUT:
                 inputCharacters(event.text.text);
                 break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_BACKSPACE:
+                        backspace();
+                        break;
+                }
+                break;
 			}
+            
             
 		}
 

@@ -48,7 +48,7 @@ Font loadFontFromFile(const char* fileName) {
 	free(bitmap);
 
 	bakedFontSurface->pixels = NULL;
-	SDL_FreeSurface(bakedFontSurface);
+	//SDL_FreeSurface(bakedFontSurface);
 
 	return font;
 }
@@ -59,14 +59,14 @@ void drawChar(const Font* const font, const char c, const float scale, Vec2f* po
 	stbtt_GetBakedQuad(font->charData, PALETTE_WIDTH, PALETTE_HEIGHT, c - 32, &pos->x, &pos->y, &cquad, 0);
 
 	SDL_Rect src = {
-		.x = cquad.s0 * PALETTE_WIDTH,
-		.y = cquad.t0 * PALETTE_HEIGHT,
-		.w = cquad.x1 - cquad.x0,
-		.h = cquad.y1 - cquad.y0
+		.x = (int) (cquad.s0 * PALETTE_WIDTH),
+		.y = (int) (cquad.t0 * PALETTE_HEIGHT),
+		.w = (int) (cquad.x1 - cquad.x0),
+		.h = (int) (cquad.y1 - cquad.y0)
 	};
 	SDL_Rect dst = {
-		.x = cquad.x0,
-		.y = cquad.y0 + scale, //We have to add the scale to the y position here because SDL and openGl have different coord systems. 
+		.x = (int) cquad.x0,
+		.y = (int) (cquad.y0 + scale), //We have to add the scale to the y position here because SDL and openGl have different coord systems. 
 		.w = src.w,
 		.h = src.h,
 	};

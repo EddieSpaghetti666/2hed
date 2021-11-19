@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <stdio.h>
+#include "font.h" //For Palette dimensions
 
 void sce(int code) {
 	if (code < 0) {
@@ -14,4 +15,22 @@ void* scp(void* ptr) {
 		exit(2);
 	}
 	return ptr;
+}
+
+SDL_Surface* createSurfaceFromPalette(unsigned char* bitmap) {
+	SDL_Surface* bakedfontSurface = SDL_CreateRGBSurfaceWithFormat(0, PALETTE_WIDTH, PALETTE_HEIGHT, 8, SDL_PIXELFORMAT_INDEX8);
+	bakedfontSurface->pixels = bitmap;
+	sce(SDL_SetColorKey(bakedfontSurface, SDL_TRUE, 0));
+
+	SDL_Color colors[256] = { 0 };
+	for (int i = 0; i < 256; ++i) {
+		colors[i].r = i;
+		colors[i].g = i;
+		colors[i].b = i;
+	}
+
+	sce(SDL_SetPaletteColors(bakedfontSurface->format->palette, colors, 0, 256));
+
+	return bakedfontSurface;
+
 }

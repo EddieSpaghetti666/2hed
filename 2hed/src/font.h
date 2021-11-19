@@ -1,8 +1,10 @@
 #pragma once
 #include <SDL.h>
 #include "../vendor/stb_truetype.h"
+#include "util.h"
 
-
+#define PALETTE_HEIGHT 512
+#define PALETTE_WIDTH 512
 
 typedef struct Font {
 	SDL_Texture* texture;
@@ -10,4 +12,5 @@ typedef struct Font {
 } Font;
 
 Font loadFontFromFile(const char* fileName);
-void renderChar(const Font const* font, char c, float scale)
+void drawChar(const Font* const font, const char c, const float scale, Vec2f* pos);
+void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos);

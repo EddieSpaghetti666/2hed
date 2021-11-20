@@ -10,7 +10,7 @@
 #define MAX_LINE_LENGTH 1024
 
 typedef struct Line {
-    char text[1024];
+    char text[MAX_LINE_LENGTH];
 } Line;
 
 typedef struct Editor {
@@ -46,8 +46,7 @@ inline char *getCharacterUnderCursor(Editor *editor) {
 
 inline int getCurrentLineLength(Editor *editor) {
     int result = 0;
-    while((editor->lines[editor->cursorRow].text[result] != '\n') &&
-          (editor->lines[editor->cursorRow].text[result] != '\0')) {
+    while((editor->lines[editor->cursorRow].text[result] != '\0')) {
         result++;
     }
     return result;

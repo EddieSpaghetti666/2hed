@@ -78,6 +78,7 @@ int main(int argc, char* argv[]) {
         
         for(int row = 0; row < buf_count(editor.lines); row++) {
             pos.y = row * scale;
+            pos.x = STARTING_X_POS;
             Line *line = editor.lines + row;
             drawString(&font, line->text, scale, &pos);
         }

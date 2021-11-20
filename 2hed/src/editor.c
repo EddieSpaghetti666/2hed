@@ -21,7 +21,7 @@ static void insertNewLine(Editor *editor) {
     Line newLine;
     memmove( (void *) newLine.text,
              (void *) getCharacterUnderCursor(editor),
-             (strlen(getCharacterUnderCursor(editor))  * 8));
+             sizeof(Line));
     buf_push(editor->lines, newLine);
 }
 
@@ -33,6 +33,7 @@ void initEditor(Editor *editor) {
 
     Line firstLine;
     firstLine.text[0] = 0;
+    firstLine.text[1] = '\0';
     buf_push(editor->lines, firstLine);
 }
 
@@ -77,16 +78,14 @@ void moveCursorLeft(Editor *editor) {
 }
 
 void moveCursorRight(Editor *editor) {
-    if(*getCharacterUnderCursor(editor) == '\n') {
-        editor->cursorRow++;
-        editor->cursorCol = 0;
-    }
-    else if(!getCharacterUnderCursor(editor)[1]) {
-        if((editor->cursorRow + 1) < buf_count(editor->lines)) {
+
+    if((editor->cursorCol + 1) > getCurrentLineLength(editor)) {
+        if(editor->cursorRow + 1 < buf_count(editor->lines)) {
             editor->cursorRow++;
+            editor->cursorCol = 0;
         }
         else {
-            moveCursorDown(editor);
+            return;
         }
     }
     else {
@@ -98,15 +97,14 @@ void moveCursorRight(Editor *editor) {
 void moveCursorUp(Editor *editor) {
     if(editor->cursorRow <= 0) return; // If you're at the top line, return.
     editor->cursorRow--;
-    if(*getCharacterUnderCursor(editor) == '\n' ||
-       *getCharacterUnderCursor(editor) == '\0') {
+    if(*getCharacterUnderCursor(editor) == '\0') {
         editor->cursorCol = getCurrentLineLength(editor);
     }
 }
 
 
 void moveCursorDown(Editor *editor) {
-    if((editor->cursorRow + 1) > buf_count(editor->lines)) return; // If you're at the bottom line, return.
+    if((editor->cursorRow + 1) >= buf_count(editor->lines)) return; // If you're at the bottom line, return.
     editor->cursorRow++;
     if(!getCharacterUnderCursor(editor)) {
         editor->cursorCol = getCurrentLineLength(editor);
@@ -115,7 +113,7 @@ void moveCursorDown(Editor *editor) {
 
 
 void carraigeReturn(Editor *editor) {
-    addTextAtCursor(editor, "\n");
+    addTextAtCursor(editor, "\0");
     insertNewLine(editor);
     editor->cursorRow++;
     editor->cursorCol = 0;

@@ -4,47 +4,27 @@
 #include <stdlib.h>
 #include "util.h"
 #include "sdl_extra.h"
+#include "editor.h"
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "font.h"
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
-
 SDL_Window* window;
 SDL_Renderer* renderer;
-
-char *flatBuffer;
-char *cursor;
 
 static void initSDL() {
 	sce(SDL_Init(SDL_INIT_VIDEO));
 	window = scp(SDL_CreateWindow("2hed", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN));
 	renderer = scp(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
-}
-
-void inputCharacters(char *text) {
-    char *temp = cursor;
-    cursor++;
-    memmove( (void *) cursor, (void *) temp, sizeof(text));
-    *temp = *text;
-}
-
-void backspace() {
-    if(cursor == flatBuffer)
-        return; // NOTE: You shouldn't backspace past the beginning.
     
-    char *temp = cursor;
-    cursor--;
-    memmove( (void *) cursor, (void *) temp, sizeof(flatBuffer));
 }
 
 int main(int argc, char* argv[]) {
 	initSDL();
     
-    flatBuffer = "PENIS!";
-    cursor = &flatBuffer[2];
-	
+    Editor editor;
+    initEditor(&editor);
+    
 	Font font = loadFontFromFile("LiberationMono-Regular.ttf");
 
 
@@ -53,25 +33,34 @@ int main(int argc, char* argv[]) {
 		SDL_Event event = { 0 };
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
-			case SDL_QUIT:
-				quit = true;
-                break;
-            case SDL_TEXTINPUT:
-                inputCharacters(event.text.text);
-                break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                    case SDLK_BACKSPACE:
-                        backspace();
-                        break;
-                    case SDLK_LEFT:
-                        cursor--;
-                        break;
-                    case SDLK_RIGHT:
-                        cursor++;
-                        break;
-                }
-                break;
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+                case SDL_TEXTINPUT:
+                    addTextAtCursor(&editor, event.text.text);
+                    break;
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_BACKSPACE:
+                            backspace(&editor);
+                            break;
+                        case SDLK_LEFT:
+                            moveCursorLeft(&editor);
+                            break;
+                        case SDLK_RIGHT:
+                            moveCursorRight(&editor);
+                            break;
+                        case SDLK_DOWN:
+                            moveCursorDown(&editor);
+                            break;
+                        case SDLK_UP:
+                            moveCursorUp(&editor);
+                            break;
+                        case SDLK_RETURN:
+                            carraigeReturn(&editor);
+                            break;
+                    }
+                    break;
 			}
             
             
@@ -83,14 +72,24 @@ int main(int argc, char* argv[]) {
 
 		SDL_SetRenderDrawColor(renderer, 205, 70, 70, SDL_ALPHA_OPAQUE);
         
-        Vec2f pos = { SCREEN_WIDTH/2 - 50.0f, SCREEN_HEIGHT/2 - 50.0f };
-        drawString(&font, flatBuffer, 32.0f, &pos, cursor);
+        Vec2f pos = { STARTING_X_POS, STARTING_Y_POS };
+        float scale = 32.0f;
+
+        
+        for(int row = 0; row < buf_count(editor.lines); row++) {
+            pos.y = row * scale;
+            Line *line = editor.lines + row;
+            drawString(&font, line->text, scale, &pos);
+        }
+        
+        drawCaret(&font, scale, editor.cursorCol, editor.cursorRow);
     
 
         SDL_RenderPresent(renderer);
 
 	}
 
+    freeEditor(&editor);
 	SDL_Quit();
 
 	return 0;

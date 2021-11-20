@@ -25,6 +25,10 @@ static void insertNewLine(Editor *editor) {
     buf_push(editor->lines, newLine);
 }
 
+void deleteLine(Editor *editor) {
+    
+}
+
 
 void initEditor(Editor *editor) {
     editor->lines = NULL;
@@ -56,6 +60,7 @@ void backspace(Editor *editor) {
     if(editor->cursorCol <= 0)
     {
         editor->cursorRow--;
+        editor->cursorCol = getCurrentLineLength(editor);
     }
     else
     {
@@ -111,10 +116,30 @@ void moveCursorDown(Editor *editor) {
     }
 }
 
+void moveText(Editor *editor, Line *dest, Line *src)
+{
+    if(!dest)
+    {
+        insertNewLine(editor);
+    }
+    memmove( (void *) &dest->text,
+             (void *) &src->text,
+             ((strlen(src->text) + 1) * 8));
+
+}
 
 void carraigeReturn(Editor *editor) {
+
     addTextAtCursor(editor, "\0");
-    insertNewLine(editor);
+    if(buf_count(editor->lines) > editor->cursorRow + 1) {
+        moveText(editor,
+                 &editor->lines[editor->cursorRow + 1],
+                 &editor->lines[editor->cursorRow]);
+
+    }
+    else {
+        insertNewLine(editor);
+    }
     editor->cursorRow++;
     editor->cursorCol = 0;
 }

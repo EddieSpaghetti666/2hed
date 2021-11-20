@@ -5,6 +5,8 @@
 
 #define PALETTE_HEIGHT 512
 #define PALETTE_WIDTH 512
+#define ASCII_LOW 32
+#define ASCII_HIGH 96
 
 #define COLOR_WHITE { 0, 0, 0 }
 
@@ -19,6 +21,6 @@ typedef struct Color {
     Uint8 b;
 } Color;
 
-Font loadFontFromFile(const char* fileName);
+Font loadFontFromFile(const char* fileName, const float fontSize);
 void drawChar(const Font* const font, const char c, const float scale, Vec2f* pos);
 void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos, char *cursor);

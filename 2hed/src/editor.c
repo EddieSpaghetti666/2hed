@@ -49,12 +49,14 @@ void initEditor(Editor* editor) {
 }
 
 void freeEditor(Editor* editor) {
-    Line *line = editor->lastLine;
-    while(line)
-    {
-        free(line);
-        line = line->prev;
-    }
+/*
+  Line *line = editor->lastLine;
+  while(line)
+  {
+  free(line);
+  line = line->prev;
+  }
+*/
     
 }
 

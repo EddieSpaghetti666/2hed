@@ -46,11 +46,16 @@ void deleteLine(Editor *editor) {
 
 
 static void insertNewLine(Editor* editor) {
-	Line newLine;
-	memmove((void*)newLine.text,
-		(void*)getCharacterUnderCursor(editor),
-		sizeof(Line));
-	buf_push(editor->lines, newLine);
+    Line* line = (Line*)malloc(sizeof(Line));
+    line->prev = getCurrentLine(editor);
+    line->next = getCurrentLine(editor)->next;
+    getCurrentLine(editor)->next = line;
+
+    memmove( (void *) line->text,
+             (void *) getCharacterUnderCursor(editor),
+             strlen( (char *) getCharacterUnderCursor(editor)) + 1);
+
+    editor->lineCount++;
 }
 
 

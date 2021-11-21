@@ -32,19 +32,21 @@ static unsigned char* createTtfBuffer(const char* fileName) {
 	return ttf_buffer;
 }
 
-Font loadFontFromFile(const char* fileName) {
+Font loadFontFromFile(const char* fileName, const float fontSize) {
 	Font font;
 
 	unsigned char* bitmap = (unsigned char*)malloc(sizeof(unsigned char) * PALETTE_HEIGHT * PALETTE_WIDTH);
 	unsigned char* ttf_buffer = createTtfBuffer(fileName);
 
-	stbtt_BakeFontBitmap(ttf_buffer, 0, 32.0, bitmap, PALETTE_WIDTH, PALETTE_HEIGHT, 32, 96, font.charData);
+	stbtt_BakeFontBitmap(ttf_buffer, 0, fontSize, bitmap, PALETTE_WIDTH, PALETTE_HEIGHT, ASCII_LOW, ASCII_HIGH, font.charData);
 	
 	free(ttf_buffer);
 
 	SDL_Surface* bakedFontSurface = createSurfaceFromPalette(bitmap);
 	
 	font.texture = scp(SDL_CreateTextureFromSurface(renderer, bakedFontSurface));
+
+	SDL_SetTextureBlendMode(font.texture, SDL_BLENDMODE_ADD);
 
 	free(bitmap);
 
@@ -79,7 +81,7 @@ void drawCaret(const Font* const font, const float scale, int cursorCol, int cur
 void drawChar(const Font* const font, const char c, const float scale, Vec2f* pos) {
 
 	stbtt_aligned_quad cquad;
-	stbtt_GetBakedQuad(font->charData, PALETTE_WIDTH, PALETTE_HEIGHT, c - 32, &pos->x, &pos->y, &cquad, 0);
+	stbtt_GetBakedQuad(font->charData, PALETTE_WIDTH, PALETTE_HEIGHT, c - ASCII_LOW, &pos->x, &pos->y, &cquad, 0);
 
 	SDL_Rect src = {
 		.x = (int) (cquad.s0 * PALETTE_WIDTH),
@@ -93,6 +95,7 @@ void drawChar(const Font* const font, const char c, const float scale, Vec2f* po
 		.w = src.w,
 		.h = src.h,
 	};
+
 
 	SDL_RenderCopy(renderer, font->texture, &src, &dst);
 

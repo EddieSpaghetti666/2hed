@@ -33,8 +33,11 @@ static void initSDL() {
 	renderer = scp(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 }
 
-void updateScreen(Editor editor, Font font, int framesDrawnThisSecond)
+void updateScreen(Editor editor, Font font, int framesDrawnThisSecond,
+                  SDL_Texture *backBuffer, SDL_Rect *camera)
 {
+
+
     //Clear screen
     SDL_SetRenderDrawColor(renderer, 0x28, 0x28, 0x28, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
@@ -49,13 +52,17 @@ void updateScreen(Editor editor, Font font, int framesDrawnThisSecond)
         pos.y = row * scale;
         pos.x = STARTING_X_POS;
         drawString(&font, line->text, scale, &pos);
+
     }
 
     if(framesDrawnThisSecond < 30) {
-        drawCaret(&font, scale, editor.cursorCol, editor.cursorRow);
-    }   
-
+        drawCaret(&font, scale, editor.cursorCol, editor.cursorRow, camera);
+    }
+    
+    SDL_SetRenderTarget(renderer, 0);    
+    SDL_RenderCopy(renderer, backBuffer, camera, 0);
     SDL_RenderPresent(renderer);
+    SDL_SetRenderTarget(renderer, backBuffer);
 
 }
 
@@ -74,7 +81,24 @@ int main(int argc, char* argv[]) {
 
 	Font font = loadFontFromFile("../LiberationMono-Regular.ttf", FONT_SIZE);
 
+    SDL_Rect camera = { 0,
+                        0,
+                        SCREEN_WIDTH,
+                        SCREEN_HEIGHT };
 
+    // TODO: Grow as needed.
+    SDL_Texture *backBuffer = SDL_CreateTexture(renderer,
+                                                SDL_PIXELFORMAT_RGBA32,
+                                                SDL_TEXTUREACCESS_TARGET,
+                                                SCREEN_WIDTH * 3,
+                                                SCREEN_HEIGHT * 3);
+
+    SDL_SetRenderTarget(renderer, backBuffer);
+    SDL_SetRenderDrawColor(renderer, 0x28, 0x28, 0x28, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 205, 70, 70, SDL_ALPHA_OPAQUE);
+
+ 
 	bool quit = false;
 	while (!quit) {
 		SDL_Event event = { 0 };
@@ -87,7 +111,7 @@ int main(int argc, char* argv[]) {
                 case SDL_TEXTINPUT:
                     addTextAtCursor(&editor, event.text.text);
                     framesDrawnThisSecond = 0;
-                    updateScreen(editor, font, framesDrawnThisSecond);
+                    updateScreen(editor, font, framesDrawnThisSecond, backBuffer, &camera);
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
@@ -114,7 +138,7 @@ int main(int argc, char* argv[]) {
                             break;
                     }
                     framesDrawnThisSecond = 0;
-                    updateScreen(editor, font, framesDrawnThisSecond);
+                    updateScreen(editor, font, framesDrawnThisSecond, backBuffer, &camera);
                     break;
 			}
             
@@ -125,7 +149,8 @@ int main(int argc, char* argv[]) {
             
 		}
 
-        updateScreen(editor, font, framesDrawnThisSecond);
+        updateScreen(editor, font, framesDrawnThisSecond, backBuffer, &camera);
+
         
         const Uint32 frameDuration = SDL_GetTicks() - start;
         const Uint8 deltaTimeMS = 1000 / FPS;

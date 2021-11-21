@@ -56,7 +56,8 @@ Font loadFontFromFile(const char* fileName, const float fontSize) {
 	return font;
 }
 
-void drawCaret(const Font* const font, const float scale, int cursorCol, int cursorRow) {
+void drawCaret(const Font* const font, const float scale, int cursorCol, int cursorRow,
+               SDL_Rect *camera) {
 
 #define RIGHT_PADDING 1
 
@@ -74,6 +75,23 @@ void drawCaret(const Font* const font, const float scale, int cursorCol, int cur
     SDL_RenderFillRect(renderer, &caret);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
     SDL_RenderDrawRect(renderer, &caret);
+
+    if(caret.x + width> camera->x + SCREEN_WIDTH)
+    {
+        camera->x += SCREEN_WIDTH / 3;
+    }
+    if(caret.x < camera->x)
+    {
+        camera->x = (int) caret.x;
+    }
+    if(caret.y + height > camera->y + SCREEN_HEIGHT)
+    {
+        camera->y = SCREEN_HEIGHT / 3;
+    }
+    if(caret.y < camera->y)
+    {
+        camera->y = caret.y;
+    }
 
 #undef RIGHT_PADDING
 }

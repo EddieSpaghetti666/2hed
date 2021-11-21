@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 	bool quit = false;
 	while (!quit) {
 		SDL_Event event = { 0 };
-        const Uint8 start = SDL_GetTicks();
+        const Uint32 start = SDL_GetTicks();
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
                 case SDL_QUIT:
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
 
         SDL_RenderPresent(renderer);
         
-        const Uint8 frameDuration = SDL_GetTicks() - start;
+        const Uint32 frameDuration = SDL_GetTicks() - start;
         const Uint8 deltaTimeMS = 1000 / FPS;
         if (frameDuration < deltaTimeMS) {
             SDL_Delay(deltaTimeMS - frameDuration);

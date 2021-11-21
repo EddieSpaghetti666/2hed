@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void loadFileIntoBuffer(const char* fileName, void* buffer) {
+size_t loadFileIntoBuffer(const char* fileName, char* buffer) {
 	size_t fileSize;
 	FILE* file;
 
@@ -17,12 +17,15 @@ void loadFileIntoBuffer(const char* fileName, void* buffer) {
 	rewind(file);
 
 	size_t result = fread(buffer, 1, fileSize, file);
+	buffer[result] = EOF;
 
 	if (result != fileSize) {
 		fprintf(stderr, "Couldn't read entire font file");
 		exit(3);
 	}
 	fclose(file);
+
+	return result;
 }
 
 void saveFile(const char* fileName, const char* buffer) {

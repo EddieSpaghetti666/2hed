@@ -33,16 +33,18 @@ static void initSDL() {
 	renderer = scp(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 }
 
-}
-
 int main(int argc, char* argv[]) {
     char* arr = NULL;
 
 	initSDL();
     
-  Editor editor;
-  initEditor(&editor);
-	
+    Editor editor;
+    initEditor(&editor);
+
+    char fileBuffer[2048];
+    size_t buffSize = loadFileIntoBuffer(CURRENT_FILE, fileBuffer);
+    createEditorFromBuffer(&editor, fileBuffer, buffSize);
+
 	Font font = loadFontFromFile("../LiberationMono-Regular.ttf", FONT_SIZE);
 
 
@@ -60,6 +62,9 @@ int main(int argc, char* argv[]) {
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
+                        case SDLK_ESCAPE:
+                            quit = true;
+                            break;
                         case SDLK_BACKSPACE:
                             backspace(&editor);
                             break;
@@ -98,11 +103,10 @@ int main(int argc, char* argv[]) {
         Vec2f pos = { STARTING_X_POS, STARTING_Y_POS };
         float scale = 32.0f;
 
-        
-        for(int row = 0; row < buf_count(editor.lines); row++) {
+        Line* line = editor.lines;
+        for (int row = 0; line != NULL; ++row, line = line->next) {
             pos.y = row * scale;
             pos.x = STARTING_X_POS;
-            Line *line = editor.lines + row;
             drawString(&font, line->text, scale, &pos);
         }
         

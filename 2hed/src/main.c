@@ -25,7 +25,7 @@ SDL_Renderer* renderer;
 char flatBuffer[MAX_BUFFER_LEN];
 char *cursor;
 
-static const char* CURRENT_FILE = "./test.txt";
+static const char* CURRENT_FILE = "../test.txt";
 
 static void initSDL() {
 	sce(SDL_Init(SDL_INIT_VIDEO));

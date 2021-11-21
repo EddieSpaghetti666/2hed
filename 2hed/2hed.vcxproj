@@ -23,11 +23,13 @@
     <ClCompile Include="src\font.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\sdl_extra.c" />
+    <ClCompile Include="src\util.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\editor.h" />
     <ClInclude Include="src\font.h" />
     <ClInclude Include="src\sdl_extra.h" />
+    <ClInclude Include="src\stretchbuffer.h" />
     <ClInclude Include="src\util.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

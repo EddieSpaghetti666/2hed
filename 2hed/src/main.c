@@ -33,15 +33,13 @@ static void initSDL() {
 	renderer = scp(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
 }
 
-}
-
 int main(int argc, char* argv[]) {
     char* arr = NULL;
 
 	initSDL();
     
-  Editor editor;
-  initEditor(&editor);
+    Editor editor;
+    initEditor(&editor);
 	
 	Font font = loadFontFromFile("../LiberationMono-Regular.ttf", FONT_SIZE);
 

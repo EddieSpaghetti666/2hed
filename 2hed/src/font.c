@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "sdl_extra.h"
 #include <string.h>
+#include "editor.h"
 
 extern SDL_Renderer* renderer;
 
@@ -55,16 +56,18 @@ Font loadFontFromFile(const char* fileName, const float fontSize) {
 	return font;
 }
 
-void drawCaret(const Font* const font, const float scale, Vec2f* pos)
-{
-    // TODO: Make the caret blink
-    #define RIGHT_PADDING 1
+void drawCaret(const Font* const font, const float scale, int cursorCol, int cursorRow) {
+
+#define RIGHT_PADDING 1
+
+    int width = (int) (font->charData[0].xadvance + RIGHT_PADDING);
+    int height = (int) scale;
     
     SDL_Rect caret = {
-        .x = (int) (pos->x),
-        .y = (int) (pos->y + (scale/4)), 
-        .w = (int) (font->charData[0].xadvance + RIGHT_PADDING),
-        .h = (int) scale,
+        .x = (int) cursorCol * width,
+        .y = (int) (cursorRow * height) + (height / 4), 
+        .w = width,
+        .h = height,
     };
 
     SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 100);
@@ -72,7 +75,7 @@ void drawCaret(const Font* const font, const float scale, Vec2f* pos)
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
     SDL_RenderDrawRect(renderer, &caret);
 
-    #undef RIGHT_PADDING
+#undef RIGHT_PADDING
 }
 
 void drawChar(const Font* const font, const char c, const float scale, Vec2f* pos) {
@@ -99,12 +102,13 @@ void drawChar(const Font* const font, const char c, const float scale, Vec2f* po
 
 }
 
-void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos, char *cursor) {
+void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos) {
 	while (*string) {
-        if(cursor == string)
-        {
-            drawCaret(font, scale, startPos);
+        if(*string == '\n') {
+            startPos->x = STARTING_X_POS;
+            break;
         }
+        
 		drawChar(font, *string, scale, startPos);
         
         string++;

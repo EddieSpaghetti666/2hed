@@ -8,12 +8,11 @@
 #define ASCII_LOW 32
 #define ASCII_HIGH 96
 
-#define COLOR_WHITE { 0, 0, 0 }
-
 typedef struct Font {
 	SDL_Texture* texture;
 	stbtt_bakedchar charData[96];
 } Font;
+
 
 typedef struct Color {
     Uint8 r;
@@ -23,4 +22,5 @@ typedef struct Color {
 
 Font loadFontFromFile(const char* fileName, const float fontSize);
 void drawChar(const Font* const font, const char c, const float scale, Vec2f* pos);
-void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos, char *cursor);
+void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos);
+void drawCaret(const Font* const font, const float scale, int caretCol, int caretRow);

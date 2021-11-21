@@ -39,13 +39,6 @@ static inline unsigned char* getCharacterUnderCursor(Editor* editor) {
 	return (unsigned char *) currentLine->text + editor->cursorCol;
 }
 
-void deleteLine(Editor *editor) {
-    
-}
-
-
-
-
 
 void initEditor(Editor* editor) {
 	editor->lines = NULL;
@@ -56,6 +49,12 @@ void initEditor(Editor* editor) {
 }
 
 void freeEditor(Editor* editor) {
+    Line *line = editor->lastLine;
+    while(line)
+    {
+        free(line);
+        line = line->prev;
+    }
     
 }
 

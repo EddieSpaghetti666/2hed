@@ -45,31 +45,6 @@ void deleteLine(Editor *editor) {
 
 
 
-static void insertNewLine(Editor* editor) {
-
-    Line* newLine = (Line*)malloc(sizeof(Line));
-    Line *currentLine = getCurrentLine(editor);
-    newLine->prev = currentLine;
-
-    if(currentLine->next == NULL) {
-        editor->lastLine = newLine;
-    }
-    else
-    {
-        newLine->next = currentLine->next;
-    }
-    
-    currentLine->next = newLine;
-
-    memmove( (void *) newLine->text,
-             (void *) getCharacterUnderCursor(editor),
-             strlen( (char *) getCharacterUnderCursor(editor)) + 1);
-
-    editor->lineCount++;
-
-}
-
-
 
 
 void initEditor(Editor* editor) {
@@ -91,8 +66,8 @@ void addTextAtCursor(Editor* editor, char* text) {
 	size_t bytesToShift = strlen(temp) + 1; //+1 because strlen doesn't count null terminator.
 	editor->cursorCol++;
 	memmove((void*)getCharacterUnderCursor(editor),
-		(void*)temp,
-		bytesToShift);
+            (void*)temp,
+            bytesToShift);
 	*temp = *text;
 }
 
@@ -183,23 +158,59 @@ void moveCursorDown(Editor* editor) {
 	
 }
 
-void moveText(Editor *editor, Line *dest, Line *src)
+Line *createLine()
 {
-    if(!dest)
-    {
-        insertNewLine(editor);
+    Line *result = (Line *)malloc(sizeof(Line));
+    result->next = NULL;
+    result->prev = NULL;
+
+    return result;
+}
+
+
+static void insertNewLine(Editor* editor) {
+    
+    Line* newLine = createLine();
+    Line *currentLine = getCurrentLine(editor);
+
+    newLine->prev = currentLine;
+
+    if(currentLine->next == NULL) {
+        editor->lastLine = newLine;
     }
-    memmove( (void *) &dest->text,
-             (void *) &src->text,
-             ((strlen(src->text) + 1) * 8));
+    else
+    {
+        newLine->next = currentLine->next;
+    }
+    
+    currentLine->next = newLine;
+
+    if(*getCharacterUnderCursor(editor))
+    {
+        memmove( (void *) newLine->text,
+                 (void *) getCharacterUnderCursor(editor),
+                 strlen( (char *) getCharacterUnderCursor(editor)) + 1);
+    }
+
+    editor->lineCount++;
 
 }
 
+
 void carraigeReturn(Editor* editor) {
-	addTextAtCursor(editor, "\0");
-	insertNewLine(editor);
-	editor->cursorRow++;
-	editor->cursorCol = 0;
+    
+    addTextAtCursor(editor, "\0");
+    if(getCurrentLine(editor) == editor->lastLine &&
+       editor->cursorCol >= getCurrentLineLength(editor))
+    {
+        appendLine(editor, createLine());
+    }
+    else
+    {
+        insertNewLine(editor);
+    }
+    editor->cursorRow++;
+    editor->cursorCol = 0;
 }
 
 void createEditorFromBuffer(Editor* editor, const char* buffer, size_t bufSize) {

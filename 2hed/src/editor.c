@@ -29,14 +29,14 @@ static Line* getCurrentLine(Editor* editor) {
 
 
 static inline int getCurrentLineLength(Editor *editor) {
-	return strlen(getCurrentLine(editor)->text);
+	return (int) strlen(getCurrentLine(editor)->text);
 }
 
 
 
 static inline unsigned char* getCharacterUnderCursor(Editor* editor) {
 	Line* currentLine = getCurrentLine(editor);
-	return currentLine->text + editor->cursorCol;
+	return (unsigned char *) currentLine->text + editor->cursorCol;
 }
 
 void deleteLine(Editor *editor) {
@@ -71,7 +71,7 @@ void freeEditor(Editor* editor) {
 
 
 void addTextAtCursor(Editor* editor, char* text) {
-	char* temp = getCharacterUnderCursor(editor);
+	char* temp = (char *) getCharacterUnderCursor(editor);
 	size_t bytesToShift = strlen(temp) + 1; //+1 because strlen doesn't count null terminator.
 	editor->cursorCol++;
 	memmove((void*)getCharacterUnderCursor(editor),
@@ -92,7 +92,7 @@ static void moveLineUp(Line* line) {
 
 void backspace(Editor* editor) {
 	if (editor->cursorCol <= 0 && editor->cursorRow <= 0) return;
-	char* temp = getCharacterUnderCursor(editor);
+	char* temp = (char *) getCharacterUnderCursor(editor);
 	if (editor->cursorCol <= 0)
 	{
 		//TODO: move this to it's own function?
@@ -101,7 +101,7 @@ void backspace(Editor* editor) {
 			editor->cursorCol = 0;
 		}
 		else {
-			editor->cursorCol = strlen(currentLine->prev->text);
+			editor->cursorCol = (int) strlen(currentLine->prev->text);
 		}
 		moveLineUp(getCurrentLine(editor));
 		editor->cursorRow--;
@@ -159,7 +159,7 @@ void moveCursorDown(Editor* editor) {
 	if ((editor->cursorRow + 1) >= editor->lineCount) return; // If you're at the bottom line, return.
 	size_t nextLineLength = strlen(getCurrentLine(editor)->next->text);
 	if (editor->cursorCol > nextLineLength) {
-		editor->cursorCol = nextLineLength;
+		editor->cursorCol = (int) nextLineLength;
 	}
 	editor->cursorRow++;
 

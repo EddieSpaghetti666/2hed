@@ -93,6 +93,7 @@ static void moveLineUp(Line* line) {
 		line->next->prev = previous;
 	}
 	//TODO: free the line you don't need anymore!
+    free(line);
 }
 
 void backspace(Editor* editor) {

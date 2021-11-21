@@ -24,6 +24,9 @@
     <ClCompile Include="src\sdl_extra.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\font.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stretchbuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,5 @@
 #include "editor.h"
+#include <string.h>
 
 void grow(int capacity, size_t elementSize, int sizeToGrow, void **data) {
     

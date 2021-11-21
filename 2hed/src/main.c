@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     Editor editor;
     initEditor(&editor);
     
-	Font font = loadFontFromFile("LiberationMono-Regular.ttf");
+	Font font = loadFontFromFile("../LiberationMono-Regular.ttf");
 
 
 	bool quit = false;

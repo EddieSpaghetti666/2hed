@@ -40,7 +40,11 @@ int main(int argc, char* argv[]) {
     
     Editor editor;
     initEditor(&editor);
-	
+
+    char fileBuffer[2048];
+    loadFileIntoBuffer(CURRENT_FILE, fileBuffer);
+    createEditorFromBuffer(&editor, fileBuffer);
+
 	Font font = loadFontFromFile("../LiberationMono-Regular.ttf", FONT_SIZE);
 
 

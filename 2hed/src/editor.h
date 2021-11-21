@@ -63,3 +63,6 @@ void moveCursorRight(Editor *editor);
 void carraigeReturn(Editor *editor);
 void moveCursorUp(Editor *editor);
 void moveCursorDown(Editor *editor);
+
+void createEditorFromBuffer(Editor* editor, const char* buffer);
+void appendLine(Editor* editor, const Line line);

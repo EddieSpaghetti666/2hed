@@ -31,11 +31,6 @@ void initEditor(Editor *editor) {
     editor->lines = NULL;
     editor->cursorCol = 0;
     editor->cursorRow = 0;
-
-    Line firstLine;
-    firstLine.text[0] = 0;
-    firstLine.text[1] = '\0';
-    buf_push(editor->lines, firstLine);
 }
 
 void freeEditor(Editor *editor) {
@@ -120,3 +115,19 @@ void carraigeReturn(Editor *editor) {
     editor->cursorCol = 0;
 }
 
+void createEditorFromBuffer(Editor* editor, const char* buffer) {
+    while (*buffer != '\0') {
+        Line line;
+        int i = 0;
+        for (; *buffer != '\n' && *buffer != '\0'; ++buffer, ++i) {
+            line.text[i] = *buffer;
+        }
+        line.text[i++] = '\n';
+        line.text[i] = '\0';
+        appendLine(editor, line);
+    }
+}
+
+void appendLine(Editor* editor, const Line line){
+    buf_push(editor->lines, line);
+}

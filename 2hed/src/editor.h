@@ -21,6 +21,7 @@ typedef struct Editor {
     int cursorCol;
     int cursorRow;
     Line* lastLine;
+    int lineCount;
 } Editor;
 
 typedef struct {
@@ -44,14 +45,6 @@ typedef struct {
 #define buf_free(b)         ((b) ? free(buf_header(b)),0 : 0)
 
 
-
-inline int getCurrentLineLength(Editor *editor) {
-    int result = 0;
-    while((editor->lines[editor->cursorRow].text[result] != '\0')) {
-        result++;
-    }
-    return result;
-}
 
 
 void grow(int capacity, size_t elementSize, int sizeToGrow, void **data);

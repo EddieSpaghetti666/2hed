@@ -23,4 +23,4 @@ typedef struct Color {
 Font loadFontFromFile(const char* fileName, const float fontSize);
 void drawChar(const Font* const font, const char c, const float scale, Vec2f* pos);
 void drawString(const Font* const font, const char* string, const float scale, Vec2f* startPos);
-void drawCaret(const Font* const font, const float scale, int caretCol, int caretRow);
+void drawCaret(const Font* const font, const float scale, int caretCol, int caretRow, SDL_Rect *camera);

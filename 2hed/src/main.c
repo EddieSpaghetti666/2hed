@@ -120,7 +120,7 @@ int main(int argc, char* argv[]) {
             
             const Uint8* keyStates = SDL_GetKeyboardState(NULL);
             if (keyStates[SDL_SCANCODE_LCTRL] && keyStates[SDL_SCANCODE_S]) {
-                saveFile(CURRENT_FILE, flatBuffer);
+                saveFile(CURRENT_FILE, &editor);
             }
             
 		}

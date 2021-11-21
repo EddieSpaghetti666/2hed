@@ -14,6 +14,7 @@ typedef struct Line {
     char text[MAX_LINE_LENGTH];
     struct Line* next;
     struct Line* prev;
+
 } Line;
 
 typedef struct Editor {

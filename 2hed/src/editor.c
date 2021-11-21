@@ -174,23 +174,15 @@ static void insertNewLine(Editor* editor) {
     Line *currentLine = getCurrentLine(editor);
 
     newLine->prev = currentLine;
-
-    if(currentLine->next == NULL) {
-        editor->lastLine = newLine;
-    }
-    else
-    {
-        newLine->next = currentLine->next;
-    }
+    newLine->next = currentLine->next;
     
     currentLine->next = newLine;
 
-    if(*getCharacterUnderCursor(editor))
-    {
-        memmove( (void *) newLine->text,
-                 (void *) getCharacterUnderCursor(editor),
-                 strlen( (char *) getCharacterUnderCursor(editor)) + 1);
-    }
+    memmove( (void *) newLine->text,
+             (void *) getCharacterUnderCursor(editor),
+             strlen( (char *) getCharacterUnderCursor(editor)) + 1);
+
+    addTextAtCursor(editor, "\0");
 
     editor->lineCount++;
 
@@ -199,16 +191,14 @@ static void insertNewLine(Editor* editor) {
 
 void carraigeReturn(Editor* editor) {
     
-    addTextAtCursor(editor, "\0");
     if(getCurrentLine(editor) == editor->lastLine &&
-       editor->cursorCol >= getCurrentLineLength(editor))
-    {
+       editor->cursorCol >= getCurrentLineLength(editor)) {
         appendLine(editor, createLine());
     }
-    else
-    {
+    else {
         insertNewLine(editor);
     }
+    
     editor->cursorRow++;
     editor->cursorCol = 0;
 }

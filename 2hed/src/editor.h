@@ -19,10 +19,10 @@ typedef struct Line {
 
 typedef struct Editor {
     Line *lines;
-    int cursorCol;
-    int cursorRow;
+    unsigned int cursorCol;
+    unsigned int cursorRow;
     Line* lastLine;
-    int lineCount;
+    unsigned int lineCount;
 } Editor;
 
 typedef struct {
@@ -59,5 +59,5 @@ void carraigeReturn(Editor *editor);
 void moveCursorUp(Editor *editor);
 void moveCursorDown(Editor *editor);
 
-void createEditorFromBuffer(Editor* editor, const char* buffer, size_t bufSize);
+void createEditorFromFile(Editor* editor, char* buffer, const char* fileName);
 void appendLine(Editor* editor, Line* line);

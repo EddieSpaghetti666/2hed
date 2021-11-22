@@ -25,7 +25,7 @@ SDL_Renderer* renderer;
 char flatBuffer[MAX_BUFFER_LEN];
 char *cursor;
 
-static const char* CURRENT_FILE = "../test.txt";
+static const char* CURRENT_FILE = "./test.txt";
 
 static void initSDL() {
 	sce(SDL_Init(SDL_INIT_VIDEO));
@@ -76,8 +76,7 @@ int main(int argc, char* argv[]) {
     initEditor(&editor);
 
     char fileBuffer[2048];
-    size_t buffSize = loadFileIntoBuffer(CURRENT_FILE, fileBuffer);
-    createEditorFromBuffer(&editor, fileBuffer, buffSize);
+    createEditorFromFile(&editor, fileBuffer, CURRENT_FILE);
 
 	Font font = loadFontFromFile("../LiberationMono-Regular.ttf", FONT_SIZE);
 

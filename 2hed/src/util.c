@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
-void loadFileIntoBuffer(const char* fileName, void* buffer) {
+
+size_t loadFileIntoBuffer(const char* fileName, char* buffer) {
 	size_t fileSize;
 	FILE* file;
 
@@ -17,16 +18,19 @@ void loadFileIntoBuffer(const char* fileName, void* buffer) {
 	rewind(file);
 
 	size_t result = fread(buffer, 1, fileSize, file);
+	buffer[result] = EOF;
 
 	if (result != fileSize) {
 		fprintf(stderr, "Couldn't read entire font file");
 		exit(3);
 	}
 	fclose(file);
+
+	return result;
 }
 
-void saveFile(const char* fileName, const char* buffer) {
-	size_t fileSize = strlen(buffer) + 1;
+void saveFile(const char* fileName, Editor *editor) {
+	//size_t fileSize = strlen(buffer) + 1;
 	FILE* file;
 
 	if (fopen_s(&file, fileName, "wb") != 0) {
@@ -34,11 +38,17 @@ void saveFile(const char* fileName, const char* buffer) {
         exit(4);
 	}
 
-
-	if (fwrite(buffer, sizeof(char), fileSize, file) != fileSize) {
-		fprintf(stderr, "Failed to write all contents to file");
-		exit(5);
-	}
+    Line *line = editor->lines;
+    for(size_t row = 0; row < editor->lineCount; row++) {
+        size_t lineSize = strlen(line->text) + 1;
+        if (fwrite(line->text, sizeof(char), lineSize, file) != lineSize) {
+            fprintf(stderr, "Failed to write all contents to file");
+            exit(5);
+        }
+        fputc('\n', file);
+        line = line->next;
+        
+    }
 	fclose(file);
 
 }

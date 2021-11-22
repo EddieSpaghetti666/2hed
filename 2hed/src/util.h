@@ -1,10 +1,12 @@
 #pragma once
+#include <stdlib.h>
+#include "editor.h"
 
 typedef struct Vec2f {
 	float x;
 	float y;
 } Vec2f;
 
-void loadFileIntoBuffer(const char* fileName, void* buffer);
-void saveFile(const char* fileName, const char* buffer);
+size_t loadFileIntoBuffer(const char* fileName, void* buffer);
+void saveFile(const char* fileName, Editor *editor);
 

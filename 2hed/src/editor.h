@@ -9,14 +9,20 @@
 
 #define MAX_LINE_LENGTH 1024
 
+
 typedef struct Line {
     char text[MAX_LINE_LENGTH];
+    struct Line* next;
+    struct Line* prev;
+
 } Line;
 
 typedef struct Editor {
     Line *lines;
-    int cursorCol;
-    int cursorRow;
+    unsigned int cursorCol;
+    unsigned int cursorRow;
+    Line* lastLine;
+    unsigned int lineCount;
 } Editor;
 
 typedef struct {
@@ -40,17 +46,6 @@ typedef struct {
 #define buf_free(b)         ((b) ? free(buf_header(b)),0 : 0)
 
 
-inline char *getCharacterUnderCursor(Editor *editor) {
-    return &editor->lines[editor->cursorRow].text[editor->cursorCol];
-}
-
-inline int getCurrentLineLength(Editor *editor) {
-    int result = 0;
-    while((editor->lines[editor->cursorRow].text[result] != '\0')) {
-        result++;
-    }
-    return result;
-}
 
 
 void grow(int capacity, size_t elementSize, int sizeToGrow, void **data);
@@ -63,3 +58,6 @@ void moveCursorRight(Editor *editor);
 void carraigeReturn(Editor *editor);
 void moveCursorUp(Editor *editor);
 void moveCursorDown(Editor *editor);
+
+void createEditorFromFile(Editor* editor, char* buffer, const char* fileName);
+void appendLine(Editor* editor, Line* line);

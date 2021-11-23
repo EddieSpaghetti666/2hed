@@ -17,7 +17,7 @@
 
 #define FONT_SIZE 32.0f
 
-#define MAX_BUFFER_LEN 2048
+#define MAX_BUFFER_LEN 20000
 
 SDL_Window* window;
 SDL_Renderer* renderer;
@@ -25,7 +25,7 @@ SDL_Renderer* renderer;
 char flatBuffer[MAX_BUFFER_LEN];
 char *cursor;
 
-static const char* CURRENT_FILE = "./test.txt";
+static const char* CURRENT_FILE = "./src/main.c";
 
 static void initSDL() {
 	sce(SDL_Init(SDL_INIT_VIDEO));
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
     Editor editor;
     initEditor(&editor);
 
-    char fileBuffer[2048];
+    char fileBuffer[MAX_BUFFER_LEN];
     createEditorFromFile(&editor, fileBuffer, CURRENT_FILE);
 
 	Font font = loadFontFromFile("../LiberationMono-Regular.ttf", FONT_SIZE);

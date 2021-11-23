@@ -7,6 +7,6 @@ typedef struct Vec2f {
 	float y;
 } Vec2f;
 
-size_t loadFileIntoBuffer(const char* fileName, void* buffer);
+size_t loadFileIntoBuffer(const char* fileName, char* buffer);
 void saveFile(const char* fileName, Editor *editor);
 

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 
 size_t loadFileIntoBuffer(const char* fileName, char* buffer) {
@@ -9,7 +10,7 @@ size_t loadFileIntoBuffer(const char* fileName, char* buffer) {
 	FILE* file;
 
 	if (fopen_s(&file, fileName, "rb") != 0) {
-		fprintf(stderr, "Error opening font file");
+		fprintf(stderr, "Error opening file");
         exit(4);
 	}
 
@@ -18,13 +19,13 @@ size_t loadFileIntoBuffer(const char* fileName, char* buffer) {
 	rewind(file);
 
 	size_t result = fread(buffer, 1, fileSize, file);
+	fclose(file);
 	buffer[result] = EOF;
 
 	if (result != fileSize) {
-		fprintf(stderr, "Couldn't read entire font file");
+		fprintf(stderr, "Couldn't read entire file: %s\n", strerror(errno));
 		exit(3);
 	}
-	fclose(file);
 
 	return result;
 }

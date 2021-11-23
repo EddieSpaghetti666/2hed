@@ -226,7 +226,12 @@ void createEditorFromFile(Editor* editor, char* buffer, const char* fileName) {
 			line->text[i] = *buffer;
 		}
 		line->text[i++] = '\0';
-		while (*buffer == '\r' || *buffer == '\n') ++buffer;
+		if (*buffer == '\r') {
+			++buffer;
+		}
+		if(*buffer == '\n') {
+			++buffer;
+		}
 		appendLine(editor, line);
 	}
 }
